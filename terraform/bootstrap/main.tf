@@ -42,13 +42,3 @@ resource "azurerm_role_assignment" "state_blob_contributor" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = data.azurerm_client_config.current.object_id
 }
-
-resource "azurerm_storage_container" "state" {
-  name                  = var.container_name
-  storage_account_id    = azurerm_storage_account.state.id
-  container_access_type = "private"
-
-  depends_on = [
-    azurerm_role_assignment.state_blob_contributor
-  ]
-}
