@@ -1,0 +1,45 @@
+# Terraform local files and state
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform variables: keep example files only
+*.tfvars
+*.tfvars.json
+!*.example.tfvars
+!.example.tfvars
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+credentials.json
+secrets/
+
+# SSH and Kubernetes credentials
+id_rsa
+id_ed25519
+kubeconfig
+kubeconfig.*
+*.kubeconfig
+
+# Logs and local files
+*.log
+logs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.retry
+vault-password.txt
