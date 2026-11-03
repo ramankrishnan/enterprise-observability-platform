@@ -15,10 +15,11 @@ resource "azurerm_virtual_network" "dev" {
 }
 
 resource "azurerm_subnet" "dev" {
-  name                 = var.subnet_name
-  resource_group_name  = azurerm_resource_group.dev.name
-  virtual_network_name = azurerm_virtual_network.dev.name
-  address_prefixes     = var.subnet_address_prefixes
+  name                            = var.subnet_name
+  resource_group_name             = azurerm_resource_group.dev.name
+  virtual_network_name            = azurerm_virtual_network.dev.name
+  address_prefixes                = var.subnet_address_prefixes
+  default_outbound_access_enabled = false
 }
 
 resource "azurerm_network_security_group" "dev" {
