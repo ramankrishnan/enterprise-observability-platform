@@ -1,35 +1,22 @@
-# Development environment infrastructure.
+# DEV environment root module.
 
-resource "azurerm_resource_group" "dev" {
+module "resource_group" {
+  source = "../../modules/resource-group"
+
   name     = var.resource_group_name
   location = var.location
   tags     = var.common_tags
 }
 
-resource "azurerm_virtual_network" "dev" {
-  name                = var.vnet_name
-  location            = azurerm_resource_group.dev.location
-  resource_group_name = azurerm_resource_group.dev.name
-  address_space       = var.vnet_address_space
-  tags                = var.common_tags
-}
+module "networking" {
+  source = "../../modules/networking"
 
-resource "azurerm_subnet" "dev" {
-  name                            = var.subnet_name
-  resource_group_name             = azurerm_resource_group.dev.name
-  virtual_network_name            = azurerm_virtual_network.dev.name
-  address_prefixes                = var.subnet_address_prefixes
-  default_outbound_access_enabled = false
-}
-
-resource "azurerm_network_security_group" "dev" {
-  name                = var.nsg_name
-  location            = azurerm_resource_group.dev.location
-  resource_group_name = azurerm_resource_group.dev.name
-  tags                = var.common_tags
-}
-
-resource "azurerm_subnet_network_security_group_association" "dev" {
-  subnet_id                 = azurerm_subnet.dev.id
-  network_security_group_id = azurerm_network_security_group.dev.id
+  resource_group_name     = module.resource_group.name
+  location                = module.resource_group.location
+  vnet_name               = var.vnet_name
+  vnet_address_space      = var.vnet_address_space
+  subnet_name             = var.subnet_name
+  subnet_address_prefixes = var.subnet_address_prefixes
+  nsg_name                = var.nsg_name
+  tags                    = var.common_tags
 }
