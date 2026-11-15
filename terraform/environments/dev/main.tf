@@ -1,5 +1,9 @@
 # DEV environment root module.
-
+locals {
+  monitoring_ssh_public_key = file(
+    pathexpand(var.monitoring_ssh_public_key_path)
+  )
+}
 module "resource_group" {
   source = "../../modules/resource-group"
 
@@ -45,7 +49,7 @@ module "monitoring_vm" {
   vm_name        = var.monitoring_vm_name
   vm_size        = var.monitoring_vm_size
   admin_username = var.monitoring_admin_username
-  ssh_public_key = var.monitoring_ssh_public_key
+  ssh_public_key = local.monitoring_ssh_public_key
 
   subnet_id = module.monitoring_network.subnet_id
 

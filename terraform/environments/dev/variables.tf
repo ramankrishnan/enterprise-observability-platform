@@ -87,10 +87,12 @@ variable "monitoring_admin_username" {
   default     = "azureadmin"
 }
 
-variable "monitoring_ssh_public_key" {
-  description = "Ed25519 public key used for SSH authentication."
+
+
+variable "monitoring_ssh_public_key_path" {
+  description = "Path to the monitoring VM SSH public key."
   type        = string
-  sensitive   = true
+  default     = "~/.ssh/monitoring_ed25519.pub"
 }
 
 variable "common_tags" {
