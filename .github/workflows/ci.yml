@@ -1,0 +1,76 @@
+name: AEGIS CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate AEGIS Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.1
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive terraform/
+
+      - name: Terraform Validation
+        run: |
+          set -e
+
+          directories=(
+            "terraform/bootstrap"
+            "terraform/environments/dev"
+            "terraform/environments/test"
+            "terraform/environments/qa"
+            "terraform/environments/staging"
+            "terraform/environments/prod"
+          )
+
+          for dir in "${directories[@]}"; do
+            echo "========================================"
+            echo "Validating: $dir"
+            echo "========================================"
+
+            terraform -chdir="$dir" init -backend=false -input=false -lockfile=readonly
+            terraform -chdir="$dir" validate
+          done
+
+      - name: Shell Script Syntax Check
+        run: |
+          set -o pipefail
+          find scripts -type f -name '*.sh' -print0 |
+          while IFS= read -r -d '' file; do
+            echo "Checking: $file"
+            bash -n "$file"
+          done
+
+      - name: Python Syntax Check
+        run: |
+          python3 - <<'PY'
+          import ast
+          from pathlib import Path
+
+          files = list(Path("scripts").rglob("*.py"))
+
+          for file in files:
+              print(f"Checking: {file}")
+              ast.parse(file.read_text(), filename=str(file))
+
+          print(f"Validated {len(files)} Python files.")
+          PY

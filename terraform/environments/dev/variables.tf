@@ -92,7 +92,7 @@ variable "monitoring_admin_username" {
 variable "monitoring_ssh_public_key_path" {
   description = "Path to the monitoring VM SSH public key."
   type        = string
-  default     = "~/.ssh/monitoring_ed25519.pub"
+  default     = "~/.ssh/aegis_monitoring_ed25519.pub"
 }
 
 variable "common_tags" {
